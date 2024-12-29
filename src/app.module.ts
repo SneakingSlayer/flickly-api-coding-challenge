@@ -2,6 +2,7 @@ import express, { Application } from 'express';
 import { AppController } from './app.controller';
 import { registerApiRoute } from './common/utils/registerApiRoute';
 import { globalErrorHandler } from './common/middlewares/globalErrorHandler';
+import { MovieModule } from './movie/movie.module';
 
 export class AppModule {
     public app: Application;
@@ -32,6 +33,7 @@ export class AppModule {
         registerApiRoute(this.app, '/', AppController.create().router);
 
         // Register modules
+        registerApiRoute(this.app, '/movies', MovieModule.create());
     }
 }
 
