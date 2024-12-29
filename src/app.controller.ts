@@ -20,7 +20,7 @@ export class AppController {
     }
 
     /**
-     * Create instance of controller
+     * Create instance of controller.
      */
     static create(): AppController {
         const appService = new AppService();

@@ -1,17 +1,19 @@
 import express, { Application } from 'express';
 import { AppController } from './app.controller';
 import { registerApiRoute } from './common/utils/registerApiRoute';
+import { globalErrorHandler } from './common/middlewares/globalErrorHandler';
 
 export class AppModule {
     public app: Application;
 
     /**
      * Initializes instance the module.
+     * Controller registration & Middleware must be in particular order.
      */
     constructor() {
         this.app = express();
-        this.configureMiddleware();
-        this.registerControllers();
+        this.registerControllers(); // 1
+        this.configureMiddleware(); // 2
     }
 
     /**
@@ -19,6 +21,7 @@ export class AppModule {
      */
     private configureMiddleware() {
         this.app.use(express.json());
+        this.app.use(globalErrorHandler);
     }
 
     /**
