@@ -1,6 +1,18 @@
-import { query } from 'express-validator';
+import { query, param } from 'express-validator';
 
-export const movieQueryValidator = [
+export const getMovieByIdValidator = [
+    param('id').isNumeric().withMessage('id must be of type number.'),
+    query('append_to_response')
+        .optional()
+        .isString()
+        .withMessage('append_to_response must be of type string.'),
+    query('language')
+        .optional()
+        .isString()
+        .withMessage('append_to_response must be of type string.'),
+];
+
+export const searchMovieQueryValidator = [
     query('query')
         .optional()
         .isString()

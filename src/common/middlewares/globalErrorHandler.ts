@@ -18,6 +18,11 @@ export const globalErrorHandler = (
 ) => {
     console.error('Error: ', err);
 
+    // Pass to default error handler
+    if (res.headersSent) {
+        return next(err);
+    }
+
     const statusCode = err.statusCode ?? 500;
     const message = err.message ?? 'Internal Server Error';
 

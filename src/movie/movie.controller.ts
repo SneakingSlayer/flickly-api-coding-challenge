@@ -1,9 +1,13 @@
 import { catchAsync } from '../common/utils/catchAsync';
-import { SearchMovieParams } from './movie.dto';
+import { GetMovieQuery, SearchMovieQuery } from './movie.dto';
 import { MovieService } from './movie.service';
 import { Router, Request, Response } from 'express';
-import { movieQueryValidator } from './movie.validators';
+import {
+    getMovieByIdValidator,
+    searchMovieQueryValidator,
+} from './movie.validators';
 import { handleValidationErrors } from '../common/middlewares/validationErrors';
+import { AppError } from '../common/utils/appError';
 
 export class MovieController {
     public router: Router;
@@ -22,9 +26,16 @@ export class MovieController {
     private initializeRoutes() {
         this.router.get(
             '/search',
-            movieQueryValidator,
+            searchMovieQueryValidator,
             handleValidationErrors,
             this.searchMovies,
+        );
+
+        this.router.get(
+            '/:id',
+            getMovieByIdValidator,
+            handleValidationErrors,
+            this.getMovieById,
         );
     }
 
@@ -33,7 +44,7 @@ export class MovieController {
      *
      */
     private searchMovies = catchAsync(
-        async (req: Request<{}, {}, {}, SearchMovieParams>, res: Response) => {
+        async (req: Request<{}, {}, {}, SearchMovieQuery>, res: Response) => {
             const {
                 query = '',
                 include_adult = false,
@@ -53,6 +64,30 @@ export class MovieController {
                 region,
                 year,
             });
+            res.json(result);
+        },
+    );
+
+    /**
+     * Initialize route for get a movie endpoint.
+     */
+    private getMovieById = catchAsync(
+        async (
+            req: Request<{ id?: number }, {}, {}, GetMovieQuery>,
+            res: Response,
+        ) => {
+            const { append_to_response = '', language = 'en-US' } = req.query;
+
+            const movieId = req.params?.id;
+
+            const result = await this.movieService.getMovieById(
+                Number(movieId),
+                {
+                    append_to_response,
+                    language,
+                },
+            );
+
             res.json(result);
         },
     );
