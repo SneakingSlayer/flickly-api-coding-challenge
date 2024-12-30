@@ -15,4 +15,12 @@ export interface MovieDto {
     vote_count: number;
 }
 
-export interface MovieParams {}
+export interface SearchMovieParams {
+    query?: string;
+    include_adult?: boolean;
+    language?: string;
+    primary_release_year?: string;
+    page?: number;
+    region?: string;
+    year?: string;
+}

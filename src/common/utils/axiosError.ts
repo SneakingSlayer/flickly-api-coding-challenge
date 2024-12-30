@@ -1,6 +1,11 @@
 import { AxiosError } from 'axios';
 import { AppError } from './appError';
 
+/**
+ * Handles errors from Axios requests and throws a custom `AppError` with appropriate messages.
+ *
+ * @param {AxiosError<any>} error - The Axios error object that was thrown during the HTTP request.
+ */
 export const handleAxiosError = (error: AxiosError<any>) => {
     if (error.response) {
         // Error response from the server
