@@ -3,25 +3,33 @@ import { AppController } from './app.controller';
 import { registerApiRoute } from './common/utils/registerApiRoute';
 import { globalErrorHandler } from './common/middlewares/globalErrorHandler';
 import { MovieModule } from './movie/movie.module';
+import cors from 'cors';
 
 export class AppModule {
     public app: Application;
 
     /**
      * Initializes instance the module.
-     * Controller registration & Middleware must be in particular order.
      */
     constructor() {
         this.app = express();
-        this.registerControllers(); // 1
-        this.configureMiddleware(); // 2
+        this.configurePreControllerMiddleware();
+        this.registerControllers();
+        this.configurePostControllerMiddleware();
     }
 
     /**
-     * Configures middlewares.
+     * Configures middlewares needed before registration of controllers.
      */
-    private configureMiddleware() {
+    private configurePreControllerMiddleware() {
+        this.app.use(cors());
         this.app.use(express.json());
+    }
+
+    /**
+     * Configures middlewares needed after registration of controllers.
+     */
+    private configurePostControllerMiddleware() {
         this.app.use(globalErrorHandler);
     }
 
