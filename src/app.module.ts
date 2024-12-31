@@ -22,7 +22,11 @@ export class AppModule {
      * Configures middlewares needed before registration of controllers.
      */
     private configurePreControllerMiddleware() {
-        this.app.use(cors());
+        this.app.use(
+            cors({
+                origin: process.env.ALLOWED_ORIGINS?.split(','),
+            }),
+        );
         this.app.use(express.json());
     }
 
