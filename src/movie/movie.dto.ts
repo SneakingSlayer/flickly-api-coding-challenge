@@ -67,3 +67,8 @@ export interface GetMovieByIdDto {
     vote_average: number;
     vote_count: number;
 }
+
+export interface TrendingMoviesQuery {
+    time_window?: string;
+    language?: string;
+}

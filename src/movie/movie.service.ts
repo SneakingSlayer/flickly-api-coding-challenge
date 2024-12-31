@@ -6,9 +6,40 @@ import {
     GetMovieQuery,
     SearchMovieDto,
     SearchMovieQuery,
+    TrendingMoviesQuery,
 } from './movie.dto';
 
 export class MovieService {
+    /**
+     * Fetches a list of trending movies from the TMDB API based on the specified time window and language.
+     *
+     * @param {TrendingMoviesQuery} params - The query parameters used to fetch trending movies.
+     *
+     * @returns {Promise<any>} A promise that resolves to the data containing the trending movies returned by the API.
+     * The shape of the data depends on the TMDB API response.
+     *
+     * @throws {Error} If an error occurs during the HTTP request, the error is passed to the `handleAxiosError` function
+     * and then rethrown.
+     */
+    async getTrendingMovies(
+        params: TrendingMoviesQuery,
+    ): Promise<Paginated<SearchMovieDto>> {
+        try {
+            const result = await tmdbAxios.get<Paginated<SearchMovieDto>>(
+                `/3/trending/movie/${params.time_window}`,
+                {
+                    params: {
+                        language: params.language,
+                    },
+                },
+            );
+            return result.data;
+        } catch (error: any) {
+            handleAxiosError(error);
+            throw error;
+        }
+    }
+
     /**
      * Searches for movies using the TMDB API and returns a paginated list of movies.
      *
@@ -49,7 +80,10 @@ export class MovieService {
         params: GetMovieQuery,
     ): Promise<GetMovieByIdDto> {
         try {
-            const result = await tmdbAxios.get(`/3/movie/${id}`, { params });
+            const result = await tmdbAxios.get<GetMovieByIdDto>(
+                `/3/movie/${id}`,
+                { params },
+            );
             return result.data;
         } catch (error: any) {
             handleAxiosError(error);

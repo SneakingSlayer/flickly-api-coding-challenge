@@ -1,13 +1,17 @@
 import { catchAsync } from '../common/utils/catchAsync';
-import { GetMovieQuery, SearchMovieQuery } from './movie.dto';
+import {
+    GetMovieQuery,
+    SearchMovieQuery,
+    TrendingMoviesQuery,
+} from './movie.dto';
 import { MovieService } from './movie.service';
 import { Router, Request, Response } from 'express';
 import {
     getMovieByIdValidator,
     searchMovieQueryValidator,
+    trendingMovieQueryValidator,
 } from './movie.validators';
 import { handleValidationErrors } from '../common/middlewares/validationErrors';
-import { AppError } from '../common/utils/appError';
 
 export class MovieController {
     public router: Router;
@@ -25,6 +29,13 @@ export class MovieController {
      */
     private initializeRoutes() {
         this.router.get(
+            '/trending',
+            trendingMovieQueryValidator,
+            handleValidationErrors,
+            this.getTrendingMovies,
+        );
+
+        this.router.get(
             '/search',
             searchMovieQueryValidator,
             handleValidationErrors,
@@ -38,6 +49,25 @@ export class MovieController {
             this.getMovieById,
         );
     }
+
+    /**
+     * Initialize route for get trending movies endpoint.
+     */
+    private getTrendingMovies = catchAsync(
+        async (
+            req: Request<{}, {}, {}, TrendingMoviesQuery>,
+            res: Response,
+        ) => {
+            const { time_window = 'day', language = 'en-US' } = req.query;
+
+            const result = await this.movieService.getTrendingMovies({
+                time_window,
+                language,
+            });
+
+            res.json(result);
+        },
+    );
 
     /**
      * Initialize route for the movie search endpoint.

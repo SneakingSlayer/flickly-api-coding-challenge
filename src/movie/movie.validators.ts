@@ -1,5 +1,16 @@
 import { query, param } from 'express-validator';
 
+export const trendingMovieQueryValidator = [
+    query('time_window')
+        .optional()
+        .isString()
+        .withMessage('time_window must be of type string.'),
+    query('language')
+        .optional()
+        .isString()
+        .withMessage('language must be of type string.'),
+];
+
 export const getMovieByIdValidator = [
     param('id').isNumeric().withMessage('id must be of type number.'),
     query('append_to_response')
