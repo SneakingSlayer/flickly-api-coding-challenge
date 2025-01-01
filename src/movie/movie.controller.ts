@@ -33,6 +33,13 @@ export class MovieController {
      */
     private initializeRoutes() {
         this.router.get(
+            '/top-rated',
+            movieListValidtor,
+            handleValidationErrors,
+            this.getTopRatedMovies,
+        );
+
+        this.router.get(
             '/popular',
             movieListValidtor,
             handleValidationErrors,
@@ -68,6 +75,23 @@ export class MovieController {
         );
     }
 
+    /**
+     * Initialize route for get top rated movies endpoint.
+     */
+    private getTopRatedMovies = catchAsync(
+        async (req: Request<{}, {}, {}, MovieListsQuery>, res: Response) => {
+            const { page = 1, region } = req.query;
+            const result = await this.movieService.getTopRatedMovies({
+                page,
+                region,
+            });
+            res.json(result);
+        },
+    );
+
+    /**
+     * Initialize route for get popular movies endpoint.
+     */
     private getPopularMovies = catchAsync(
         async (req: Request<{}, {}, {}, MovieListsQuery>, res: Response) => {
             const { page = 1, region } = req.query;

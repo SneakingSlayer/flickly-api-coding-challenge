@@ -14,6 +14,31 @@ import {
 
 export class MovieService {
     /**
+     * Fetches a list of top-rated movies from the TMDB API.
+     *
+     * @param {MovieListsQuery} params - The query parameters to customize the request.
+     *
+     * @returns {Promise<Paginated<SearchMovieDto>>} A promise that resolves to a paginated list
+     *   of top-rated movies.
+     *
+     * @throws {Error} Will throw an error if the request fails, which is handled by the `handleAxiosError` function.
+     */
+    async getTopRatedMovies(
+        params: MovieListsQuery,
+    ): Promise<Paginated<SearchMovieDto>> {
+        try {
+            const result = await tmdbAxios.get<Paginated<SearchMovieDto>>(
+                `/3/movie/top_rated`,
+                { params },
+            );
+            return result.data;
+        } catch (error: any) {
+            handleAxiosError(error);
+            throw error;
+        }
+    }
+
+    /**
      * Fetches a list of popular movies from the TMDB API.
      *
      * @param {MovieListsQuery} params - The query parameters used to filter or paginate the list of popular movies. This object should conform to the `MovieListsQuery` type.
