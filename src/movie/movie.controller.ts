@@ -2,12 +2,14 @@ import { catchAsync } from '../common/utils/catchAsync';
 import {
     GetMovieQuery,
     SearchMovieQuery,
-    TrendingMoviesQuery,
+    GetTrendingMoviesQuery,
+    GetMovieGenresQuery,
 } from './movie.dto';
 import { MovieService } from './movie.service';
 import { Router, Request, Response } from 'express';
 import {
     getMovieByIdValidator,
+    movieGenreValidator,
     searchMovieQueryValidator,
     trendingMovieQueryValidator,
 } from './movie.validators';
@@ -28,6 +30,13 @@ export class MovieController {
      * Initialize routes
      */
     private initializeRoutes() {
+        this.router.get(
+            '/genres',
+            movieGenreValidator,
+            handleValidationErrors,
+            this.getMovieGenres,
+        );
+
         this.router.get(
             '/trending',
             trendingMovieQueryValidator,
@@ -51,11 +60,25 @@ export class MovieController {
     }
 
     /**
+     * Initialize route for get movie genres endpoint.
+     */
+    private getMovieGenres = catchAsync(
+        async (
+            req: Request<{}, {}, {}, GetMovieGenresQuery>,
+            res: Response,
+        ) => {
+            const { language = 'en-US' } = req.query;
+            const result = await this.movieService.getMovieGenres({ language });
+            res.json(result);
+        },
+    );
+
+    /**
      * Initialize route for get trending movies endpoint.
      */
     private getTrendingMovies = catchAsync(
         async (
-            req: Request<{}, {}, {}, TrendingMoviesQuery>,
+            req: Request<{}, {}, {}, GetTrendingMoviesQuery>,
             res: Response,
         ) => {
             const { time_window = 'day', language = 'en-US' } = req.query;

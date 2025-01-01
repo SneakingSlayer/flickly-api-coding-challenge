@@ -6,14 +6,44 @@ import {
     GetMovieQuery,
     SearchMovieDto,
     SearchMovieQuery,
-    TrendingMoviesQuery,
+    GetTrendingMoviesQuery,
+    GetMovieGenresQuery,
+    MovieGenreDto,
 } from './movie.dto';
 
 export class MovieService {
     /**
+     * Fetches the list of movie genres from the TMDB API.
+     *
+     * @param {GetMovieGenresQuery} params - The query parameters for the request.
+     *  - `language`: The language in which the movie genres should be returned (e.g., 'en', 'es').
+     *
+     * @returns {Promise<MovieGenreDto>} A promise that resolves to the list of movie genres
+     *  in the form of a `MovieGenreDto` object, containing an array of genres.
+     *
+     * @throws {Error} If the API request fails, an error is thrown after handling it.
+     */
+    async getMovieGenres(params: GetMovieGenresQuery): Promise<MovieGenreDto> {
+        try {
+            const result = await tmdbAxios.get<MovieGenreDto>(
+                `/3/genre/movie/list`,
+                {
+                    params: {
+                        language: params.language,
+                    },
+                },
+            );
+            return result.data;
+        } catch (error: any) {
+            handleAxiosError(error);
+            throw error;
+        }
+    }
+
+    /**
      * Fetches a list of trending movies from the TMDB API based on the specified time window and language.
      *
-     * @param {TrendingMoviesQuery} params - The query parameters used to fetch trending movies.
+     * @param {GetTrendingMoviesQuery} params - The query parameters used to fetch trending movies.
      *
      * @returns {Promise<any>} A promise that resolves to the data containing the trending movies returned by the API.
      * The shape of the data depends on the TMDB API response.
@@ -22,7 +52,7 @@ export class MovieService {
      * and then rethrown.
      */
     async getTrendingMovies(
-        params: TrendingMoviesQuery,
+        params: GetTrendingMoviesQuery,
     ): Promise<Paginated<SearchMovieDto>> {
         try {
             const result = await tmdbAxios.get<Paginated<SearchMovieDto>>(

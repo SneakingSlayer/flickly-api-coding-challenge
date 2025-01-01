@@ -1,5 +1,12 @@
 import { query, param } from 'express-validator';
 
+export const movieGenreValidator = [
+    query('language')
+        .optional()
+        .isString()
+        .withMessage('language must be of type string.'),
+];
+
 export const trendingMovieQueryValidator = [
     query('time_window')
         .optional()
