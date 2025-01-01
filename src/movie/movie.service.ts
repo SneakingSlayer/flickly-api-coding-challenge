@@ -9,9 +9,35 @@ import {
     GetTrendingMoviesQuery,
     GetMovieGenresQuery,
     MovieGenreDto,
+    MovieListsQuery,
 } from './movie.dto';
 
 export class MovieService {
+    /**
+     * Fetches a list of popular movies from the TMDB API.
+     *
+     * @param {MovieListsQuery} params - The query parameters used to filter or paginate the list of popular movies. This object should conform to the `MovieListsQuery` type.
+     *
+     * @returns {Promise<Paginated<SearchMovieDto>>} A promise that resolves to a paginated list of popular movies.
+     * The response will contain the data of the movies in the form of a `SearchMovieDto` array, and pagination details such as the current page, total pages, etc.
+     *
+     * @throws {Error} Will throw an error if the request to the TMDB API fails, which is handled by the `handleAxiosError` function.
+     */
+    async getPopularMovies(
+        params: MovieListsQuery,
+    ): Promise<Paginated<SearchMovieDto>> {
+        try {
+            const result = await tmdbAxios.get<Paginated<SearchMovieDto>>(
+                `/3/movie/popular`,
+                { params },
+            );
+            return result.data;
+        } catch (error: any) {
+            handleAxiosError(error);
+            throw error;
+        }
+    }
+
     /**
      * Fetches the list of movie genres from the TMDB API.
      *
@@ -23,9 +49,11 @@ export class MovieService {
      *
      * @throws {Error} If the API request fails, an error is thrown after handling it.
      */
-    async getMovieGenres(params: GetMovieGenresQuery): Promise<MovieGenreDto> {
+    async getMovieGenres(
+        params: GetMovieGenresQuery,
+    ): Promise<{ genres: MovieGenreDto[] }> {
         try {
-            const result = await tmdbAxios.get<MovieGenreDto>(
+            const result = await tmdbAxios.get<{ genres: MovieGenreDto[] }>(
                 `/3/genre/movie/list`,
                 {
                     params: {

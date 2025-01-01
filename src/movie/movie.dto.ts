@@ -68,16 +68,21 @@ export interface GetMovieByIdDto {
     vote_count: number;
 }
 
-export interface GetMovieGenresQuery {
+export interface GetTrendingMoviesQuery {
+    time_window?: string;
     language?: string;
 }
 
-export interface GetTrendingMoviesQuery {
-    time_window?: string;
+export interface GetMovieGenresQuery {
     language?: string;
 }
 
 export interface MovieGenreDto {
     id: number;
     name: string;
+}
+
+export interface MovieListsQuery {
+    region?: string;
+    page?: number;
 }

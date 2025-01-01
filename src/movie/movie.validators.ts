@@ -1,5 +1,16 @@
 import { query, param } from 'express-validator';
 
+export const movieListValidtor = [
+    query('page')
+        .optional()
+        .isNumeric()
+        .withMessage('page must be of type number.'),
+    query('region')
+        .optional()
+        .isString()
+        .withMessage('region must be of type string.'),
+];
+
 export const movieGenreValidator = [
     query('language')
         .optional()
@@ -50,7 +61,7 @@ export const searchMovieQueryValidator = [
     query('page')
         .optional()
         .isNumeric()
-        .withMessage('page must be of type string.'),
+        .withMessage('page must be of type number.'),
     query('region')
         .optional()
         .isString()

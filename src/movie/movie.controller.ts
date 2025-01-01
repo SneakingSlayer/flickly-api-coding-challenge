@@ -4,12 +4,14 @@ import {
     SearchMovieQuery,
     GetTrendingMoviesQuery,
     GetMovieGenresQuery,
+    MovieListsQuery,
 } from './movie.dto';
 import { MovieService } from './movie.service';
 import { Router, Request, Response } from 'express';
 import {
     getMovieByIdValidator,
     movieGenreValidator,
+    movieListValidtor,
     searchMovieQueryValidator,
     trendingMovieQueryValidator,
 } from './movie.validators';
@@ -30,6 +32,13 @@ export class MovieController {
      * Initialize routes
      */
     private initializeRoutes() {
+        this.router.get(
+            '/popular',
+            movieListValidtor,
+            handleValidationErrors,
+            this.getPopularMovies,
+        );
+
         this.router.get(
             '/genres',
             movieGenreValidator,
@@ -58,6 +67,17 @@ export class MovieController {
             this.getMovieById,
         );
     }
+
+    private getPopularMovies = catchAsync(
+        async (req: Request<{}, {}, {}, MovieListsQuery>, res: Response) => {
+            const { page = 1, region } = req.query;
+            const result = await this.movieService.getPopularMovies({
+                page,
+                region,
+            });
+            res.json(result);
+        },
+    );
 
     /**
      * Initialize route for get movie genres endpoint.
