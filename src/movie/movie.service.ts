@@ -11,9 +11,35 @@ import {
     MovieGenreDto,
     MovieListsQuery,
     MovieRecommendationsQuery,
+    MovieCreditsQuery,
+    MovieCreditsDto,
 } from './movie.dto';
 
 export class MovieService {
+    /**
+     * Fetches the movie credits for a specific movie by its ID from the TMDb API.
+     *
+     * @param {number} id - The unique identifier of the movie for which to fetch the credits.
+     * @param {MovieCreditsQuery} [params] - Optional query parameters to filter or modify the credits data (e.g., language, etc.).
+     * @returns {Promise<MovieCreditsDto>} A promise that resolves to a MovieCreditsDto object containing the movie credits data.
+     * @throws {Error} If the request fails or an error occurs during the data retrieval, the function throws an error.
+     */
+    async getMovieCredits(
+        id: number,
+        params?: MovieCreditsQuery,
+    ): Promise<MovieCreditsDto> {
+        try {
+            const result = await tmdbAxios.get<MovieCreditsDto>(
+                `/3/movie/${id}/credits`,
+                { params },
+            );
+            return result.data;
+        } catch (error: any) {
+            handleAxiosError(error);
+            throw error;
+        }
+    }
+
     /**
      * Searches for movies based on the provided query parameters.
      *

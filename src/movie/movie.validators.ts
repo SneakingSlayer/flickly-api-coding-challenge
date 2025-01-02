@@ -1,5 +1,12 @@
 import { query, param } from 'express-validator';
 
+export const movieCreditsValidator = [
+    query('language')
+        .optional()
+        .isString()
+        .withMessage('language must be of type string.'),
+];
+
 export const movieRecommendationsValidator = [
     query('page')
         .optional()

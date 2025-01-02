@@ -91,3 +91,42 @@ export interface MovieRecommendationsQuery {
     language?: string;
     page?: number;
 }
+
+export interface MovieCreditsQuery {
+    language?: string;
+}
+
+export interface MovieCastDto {
+    adult: boolean;
+    gender: number | null;
+    id: number;
+    known_for_department: string;
+    name: string;
+    original_name: string;
+    popularity: number;
+    profile_path: string | null;
+    cast_id: number;
+    character: string;
+    credit_id: string;
+    order: number;
+}
+
+export interface MovieCrewDto {
+    adult: boolean;
+    gender: number | null;
+    id: number;
+    known_for_department: string;
+    name: string;
+    original_name: string;
+    popularity: number;
+    profile_path: string | null;
+    credit_id: string;
+    department: string;
+    job: string;
+}
+
+export interface MovieCreditsDto {
+    id: number;
+    cast: MovieCastDto[];
+    crew: MovieCrewDto[];
+}

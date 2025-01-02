@@ -6,11 +6,13 @@ import {
     GetMovieGenresQuery,
     MovieListsQuery,
     MovieRecommendationsQuery,
+    MovieCreditsQuery,
 } from './movie.dto';
 import { MovieService } from './movie.service';
 import { Router, Request, Response } from 'express';
 import {
     getMovieByIdValidator,
+    movieCreditsValidator,
     movieGenreValidator,
     movieListValidtor,
     movieRecommendationsValidator,
@@ -34,6 +36,13 @@ export class MovieController {
      * Initialize routes
      */
     private initializeRoutes() {
+        this.router.get(
+            '/:id/credits',
+            movieCreditsValidator,
+            handleValidationErrors,
+            this.getMovieCredits,
+        );
+
         this.router.get(
             '/:id/recommendations',
             movieRecommendationsValidator,
@@ -83,6 +92,23 @@ export class MovieController {
             this.getMovieById,
         );
     }
+
+    private getMovieCredits = catchAsync(
+        async (
+            req: Request<{ id?: number }, {}, {}, MovieCreditsQuery>,
+            res: Response,
+        ) => {
+            const movieId = req.params?.id;
+            const { language = 'en-US' } = req.query;
+            const result = await this.movieService.getMovieCredits(
+                Number(movieId),
+                {
+                    language,
+                },
+            );
+            res.json(result);
+        },
+    );
 
     /**
      * Initialize route for get movie recommendations endpoint.
