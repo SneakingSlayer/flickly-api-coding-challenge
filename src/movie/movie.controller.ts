@@ -5,6 +5,7 @@ import {
     GetTrendingMoviesQuery,
     GetMovieGenresQuery,
     MovieListsQuery,
+    MovieRecommendationsQuery,
 } from './movie.dto';
 import { MovieService } from './movie.service';
 import { Router, Request, Response } from 'express';
@@ -12,6 +13,7 @@ import {
     getMovieByIdValidator,
     movieGenreValidator,
     movieListValidtor,
+    movieRecommendationsValidator,
     searchMovieQueryValidator,
     trendingMovieQueryValidator,
 } from './movie.validators';
@@ -32,6 +34,13 @@ export class MovieController {
      * Initialize routes
      */
     private initializeRoutes() {
+        this.router.get(
+            '/:id/recommendations',
+            movieRecommendationsValidator,
+            handleValidationErrors,
+            this.getMovieRecommendations,
+        );
+
         this.router.get(
             '/top-rated',
             movieListValidtor,
@@ -74,6 +83,27 @@ export class MovieController {
             this.getMovieById,
         );
     }
+
+    /**
+     * Initialize route for get movie recommendations endpoint.
+     */
+    private getMovieRecommendations = catchAsync(
+        async (
+            req: Request<{ id?: number }, {}, {}, MovieRecommendationsQuery>,
+            res: Response,
+        ) => {
+            const movieId = req.params?.id;
+            const { page = 1, language = 'en-US' } = req.query;
+            const result = await this.movieService.getMovieRecommendations(
+                Number(movieId),
+                {
+                    page,
+                    language,
+                },
+            );
+            res.json(result);
+        },
+    );
 
     /**
      * Initialize route for get top rated movies endpoint.

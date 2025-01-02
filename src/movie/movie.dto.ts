@@ -86,3 +86,8 @@ export interface MovieListsQuery {
     region?: string;
     page?: number;
 }
+
+export interface MovieRecommendationsQuery {
+    language?: string;
+    page?: number;
+}

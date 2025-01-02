@@ -10,9 +10,35 @@ import {
     GetMovieGenresQuery,
     MovieGenreDto,
     MovieListsQuery,
+    MovieRecommendationsQuery,
 } from './movie.dto';
 
 export class MovieService {
+    /**
+     * Searches for movies based on the provided query parameters.
+     *
+     * @param {SearchMovieDto} params - The search parameters to filter or customize the request.
+     *   These can include fields like `query` (search term), `page`, `language`, etc.
+     *
+     * @returns {Promise<Paginated<SearchMovieDto>>} A promise that resolves to a paginated list
+     *   of search results, which will be in the form of `Paginated<SearchMovieDto>`.
+     */
+    async getMovieRecommendations(
+        id: number,
+        params?: MovieRecommendationsQuery,
+    ) {
+        try {
+            const result = await tmdbAxios.get<Paginated<SearchMovieDto>>(
+                `/3/movie/${id}/recommendations`,
+                { params },
+            );
+            return result.data;
+        } catch (error: any) {
+            handleAxiosError(error);
+            throw error;
+        }
+    }
+
     /**
      * Fetches a list of top-rated movies from the TMDB API.
      *
