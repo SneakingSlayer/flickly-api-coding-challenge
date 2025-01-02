@@ -13,9 +13,38 @@ import {
     MovieRecommendationsQuery,
     MovieCreditsQuery,
     MovieCreditsDto,
+    MovieImagesQuery,
+    MovieImageDto,
 } from './movie.dto';
 
 export class MovieService {
+    /**
+     * Fetches the images associated with a specific movie by its ID from the TMDb API.
+     *
+     * @param {number} id - The unique identifier of the movie for which to fetch images.
+     * @param {MovieImagesQuery} [params] - Optional query parameters to filter or modify the image data (e.g., language, image size).
+     * @returns {Promise<MovieImagesDto>} A promise that resolves to a MovieImagesDto object containing the movie's image data.
+     * @throws {Error} If the request fails or an error occurs during the data retrieval, the function throws an error.
+     */
+    async getMovieImages(
+        id: number,
+        params?: MovieImagesQuery,
+    ): Promise<MovieImageDto> {
+        try {
+            const result = await tmdbAxios.get<MovieImageDto>(
+                `/3/movie/${id}/images`,
+                {
+                    params,
+                },
+            );
+
+            return result.data;
+        } catch (error: any) {
+            handleAxiosError(error);
+            throw error;
+        }
+    }
+
     /**
      * Fetches the movie credits for a specific movie by its ID from the TMDb API.
      *

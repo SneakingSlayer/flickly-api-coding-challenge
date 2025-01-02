@@ -1,5 +1,16 @@
 import { query, param } from 'express-validator';
 
+export const movieImagesValidator = [
+    query('language')
+        .optional()
+        .isString()
+        .withMessage('image must be of type string.'),
+    query('include_image_language')
+        .optional()
+        .isString()
+        .withMessage('include_image_language must be of type string.'),
+];
+
 export const movieCreditsValidator = [
     query('language')
         .optional()

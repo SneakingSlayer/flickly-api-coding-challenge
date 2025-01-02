@@ -130,3 +130,25 @@ export interface MovieCreditsDto {
     cast: MovieCastDto[];
     crew: MovieCrewDto[];
 }
+
+export interface MovieImagesQuery {
+    language?: string;
+    include_image_language?: string;
+}
+
+export interface MovieImageDto {
+    aspect_ratio: number;
+    height: number;
+    iso_639_1: string | null;
+    file_path: string;
+    vote_average: number;
+    vote_count: number;
+    width: number;
+}
+
+export interface MovieImagesDto {
+    id: number;
+    logos: MovieImageDto[];
+    posters: MovieImageDto[];
+    backdrops: MovieImageDto[];
+}
