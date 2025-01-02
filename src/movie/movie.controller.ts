@@ -8,6 +8,7 @@ import {
     MovieRecommendationsQuery,
     MovieCreditsQuery,
     MovieImagesQuery,
+    GetMovieVideosQuery,
 } from './movie.dto';
 import { MovieService } from './movie.service';
 import { Router, Request, Response } from 'express';
@@ -18,6 +19,7 @@ import {
     movieImagesValidator,
     movieListValidtor,
     movieRecommendationsValidator,
+    movieVideosValidator,
     searchMovieQueryValidator,
     trendingMovieQueryValidator,
 } from './movie.validators';
@@ -38,6 +40,13 @@ export class MovieController {
      * Initialize routes
      */
     private initializeRoutes() {
+        this.router.get(
+            '/:id/videos',
+            movieVideosValidator,
+            handleValidationErrors,
+            this.getMovieVideos,
+        );
+
         this.router.get(
             '/:id/images',
             movieImagesValidator,
@@ -101,6 +110,26 @@ export class MovieController {
             this.getMovieById,
         );
     }
+
+    /**
+     * Initialize route for get movie videos endpoint.
+     */
+    private getMovieVideos = catchAsync(
+        async (
+            req: Request<{ id?: number }, {}, {}, GetMovieVideosQuery>,
+            res: Response,
+        ) => {
+            const movieId = req.params?.id;
+            const { language } = req.query;
+            const result = await this.movieService.getMovieVideos(
+                Number(movieId),
+                {
+                    language,
+                },
+            );
+            res.json(result);
+        },
+    );
 
     /**
      * Initialize route for get movie images endpoint.
